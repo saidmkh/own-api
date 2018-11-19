@@ -49,30 +49,48 @@ module.exports = {
         return res.status(400).json({ errors })
       }
 
-      console.log('ppppppppppppppppppppp', req.params.comment_id)
+      const comment_id = req.params.comment_id
 
-      CommentModel.find({
-        comments: {
-          $elemMatch: {
-            _id: req.params.comment_id
+      ProjectModel.findById({ _id: req.params.project_id })
+        .populate('comments')
+        .then(comments => {
+          console.log(comments)
+          const findNestedComment = (comment, id) => {
+            for (let i = 0; i < comment.length; i++) {
+              if (comment[i]._id == id) {
+                return comment[i]
+              }
+
+              const foundedComment = findNestedComment(comment[i].comments, id)
+
+              if (foundedComment) {
+                return foundedComment
+              }
+            }
           }
-        }
-      })
-        .then(comment => {
-          let reply = new CommentModel({
+
+          const comment = findNestedComment(comments.comments, comment_id)
+          console.log(':::::::-------', comment)
+          const Reply = new CommentModel({
             content: req.body.content,
-            author: comment.author,
-            project: comment.project
+            author: req.params.user_id,
+            project: req.params.project_id,
           })
-          console.log('comment', comment)
-          console.log('dddd', reply)
-          comment[0].comments.unshift(reply)
-          comment[0].save().then(comment_save => {
-            res.json({ comment_save })
-          }).catch(err => {
-            res.json({
-              error: err
+
+          comment.comments.push(Reply).save()
+          comment.save()
+            .then(saved => {
+              res.json({ saved })
+            }).catch(err => {
+              res.json({
+                error: err,
+                message: err.message
+              })
             })
+        }).catch(err => {
+          res.json({
+            error: err,
+            message: err.message
           })
         })
     }
