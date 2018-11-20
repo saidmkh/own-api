@@ -5,6 +5,7 @@ const logger = require('morgan')
 const mongoose = require('./config/config')
 const authRoute = require('./routes/auth')
 const commentRoute = require('./routes/comment')
+const userRoute = require('./routes/user')
 
 const app = express()
 
@@ -22,6 +23,7 @@ app.get('/api/', function (req, res) {
 })
 app.use('/api/', authRoute)
 app.use('/api/', commentRoute)
+app.use('/api/', userRoute)
 
 app.use(function (req, res, next) {
   let err = new Error('Not Found')

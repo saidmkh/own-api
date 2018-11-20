@@ -11,10 +11,7 @@ const Project = new Schema({
   data: [{
     type: String
   }],
-  comments: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Comment'
-  }],
+  comments: [Comment.schema],
 })
 
 module.exports = mongoose.model('Project', Project)
