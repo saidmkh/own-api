@@ -30,7 +30,9 @@ module.exports = {
                   User.comments.unshift(comment)
                   User.save()
                   res.json({
-                    comment
+                    status: 'Success',
+                    message: 'Comment created',
+                    data: comment
                   })
                 }).catch(err => {
                   console.log(err.message)
@@ -69,7 +71,11 @@ module.exports = {
           project.markModified('comments');
           project.save()
             .then(data => {
-              res.json({ data })
+              res.json({
+                status: 'Success',
+                message: 'Comment created',
+                data: data
+              })
             }).catch(err => {
               res.json({
                 error: err,

@@ -67,7 +67,11 @@ module.exports = {
                 }
               )
               User.save()
-              res.json({ data: User })
+              res.json({
+                status: 'Success',
+                message: 'User created',
+                data: User
+              })
             })
             .catch(err => {
               res.json({

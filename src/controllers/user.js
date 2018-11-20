@@ -1,6 +1,4 @@
-const UserModel = require('../models/user')
 const ProjectModel = require('../models/project')
-const CommentModel = require('../models/comment')
 
 const { findNestedComment } = require('../_helpers/functions')
 
@@ -15,11 +13,24 @@ module.exports = {
         .then(project => {
           const comment = findNestedComment(project.comments, comment_id)
 
+          if (comment.likes.indexOf(user_id) !== -1) {
+            return (
+              res.status(400).json({
+                status: false,
+                message: 'User already voted'
+              })
+            )
+          }
+
           comment.likes.push(user_id)
           project.markModified('comments')
           project.save()
             .then(data => {
-              res.json({ data })
+              res.json({
+                status: 'Success',
+                message: 'Like added',
+                data: data
+              })
             }).catch(err => {
               res.json({
                 error: err,
@@ -40,11 +51,24 @@ module.exports = {
         .then(project => {
           const comment = findNestedComment(project.comments, comment_id)
 
+          if (comment.dislikes.indexOf(user_id) !== -1) {
+            return (
+              res.status(400).json({
+                status: false,
+                message: 'User already voted'
+              })
+            )
+          }
+
           comment.dislikes.push(user_id)
           project.markModified('comments')
           project.save()
             .then(data => {
-              res.json({ data })
+              res.json({
+                status: 'Success',
+                message: 'Dislike added',
+                data: data
+              })
             }).catch(err => {
               res.json({
                 error: err,
