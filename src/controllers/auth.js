@@ -6,7 +6,7 @@ const crypto = require('crypto')
 
 const { SignUpValidate, VerifyEmailValidate, SignInValidate } = require('../_helpers/auth_validate')
 const secret_key = require('../config/key')
-const { transporter, mailOptions } = require('../_helpers/mail_options')
+const { transporter, mailOptions } = require('../config/mail_options')
 
 const argon2_options = {
   timeCost: 3,
