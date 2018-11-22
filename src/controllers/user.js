@@ -32,7 +32,7 @@ module.exports = {
                 data: data
               })
             }).catch(err => {
-              res.json({
+              res.status(400).json({
                 error: err,
                 message: err.message
               })
@@ -70,7 +70,7 @@ module.exports = {
                 data: data
               })
             }).catch(err => {
-              res.json({
+              res.status(400).json({
                 error: err,
                 message: err.message
               })

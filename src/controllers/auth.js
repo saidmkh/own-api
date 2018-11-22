@@ -131,7 +131,7 @@ module.exports = {
           (err, token) => {
             if (err) {
               return (
-                res.json({
+                res.status(400).json({
                   error: err,
                   message: err.message
                 })
@@ -146,7 +146,7 @@ module.exports = {
           }
         )
       }).catch(err => {
-        res.json({
+        res.status(400).json({
           error: err,
           message: err.message
         })
@@ -203,7 +203,7 @@ module.exports = {
             (err, token) => {
               if (err) {
                 return (
-                  res.json({
+                  res.status(400).json({
                     error: err,
                     message: err.message
                   })
@@ -218,7 +218,7 @@ module.exports = {
             }
           )
         }).catch(err => {
-          res.json({
+          res.status(400).json({
             error: err,
             message: err.message
           })

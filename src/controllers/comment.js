@@ -6,6 +6,21 @@ const CommentValidate = require('../_helpers/comment_validate')
 const { findNestedComment } = require('../_helpers/functions')
 
 module.exports = {
+  GetComments: (
+    getComments = (req, res) => {
+      ProjectModel.findById({ _id: req.params.project_id })
+        .then(project => {
+          const comments = project.comments
+          res.json({ comments })
+        }).catch(err => {
+          res.status(400).json({
+            error: err,
+            message: err.message
+          })
+        })
+    }
+  ),
+
   AddComment: (
     addComment = (req, res) => {
       const { errors, validate } = CommentValidate(req.body)
@@ -39,7 +54,7 @@ module.exports = {
                 })
             })
         }).catch(err => {
-          res.json({
+          res.status(400).json({
             error: err,
             message: err.message
           })
@@ -83,7 +98,7 @@ module.exports = {
               })
             })
         }).catch(err => {
-          res.json({
+          resres.status(400).json({
             error: err,
             message: err.message
           })
