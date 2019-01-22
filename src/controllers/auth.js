@@ -24,6 +24,8 @@ module.exports = {
         return res.status(400).json({ errors })
       }
 
+      console.log('dd')
+
       UserModel.find({
         $or: [
           { email: req.body.email },
@@ -31,6 +33,7 @@ module.exports = {
         ]
       })
         .then(FoundedUser => {
+          console.log(FoundedUser)
           if (FoundedUser.length) {
             if (FoundedUser[0].email === req.body.email) {
               errors.email = 'Email already exist'
@@ -67,11 +70,37 @@ module.exports = {
                 }
               )
               User.save()
-              res.json({
-                status: 'Success',
-                message: 'User created',
-                data: User
-              })
+
+              const payload = {
+                id: User.id,
+                email: User.email,
+                username: User.username,
+                confirmed: User.confirmed
+              }
+
+              jwt.sign(
+                payload,
+                secret_key,
+                {
+                  expiresIn: '30d'
+                },
+                (err, token) => {
+                  if (err) {
+                    return (
+                      res.status(400).json({
+                        error: err,
+                        message: err.message
+                      })
+                    )
+                  }
+
+                  res.json({
+                    success: true,
+                    token: token,
+                    data: User
+                  })
+                }
+              )
             })
             .catch(err => {
               res.json({
@@ -90,6 +119,7 @@ module.exports = {
 
   VerifyEmail: (
     verifyEmail = (req, res) => {
+      console.log(req.body)
       const { errors, validate } = VerifyEmailValidate(req.body)
 
       if (!validate) {
@@ -116,35 +146,11 @@ module.exports = {
 
         User.confirmed = true
         User.save()
-        const payload = {
-          id: User.id,
-          email: User.email,
-          username: User.username
-        }
 
-        jwt.sign(
-          payload,
-          secret_key,
-          {
-            expiresIn: '30d'
-          },
-          (err, token) => {
-            if (err) {
-              return (
-                res.status(400).json({
-                  error: err,
-                  message: err.message
-                })
-              )
-            }
-
-            res.json({
-              success: true,
-              token: token,
-              data: User
-            })
-          }
-        )
+        res.json({
+          success: true,
+          data: User
+        })
       }).catch(err => {
         res.status(400).json({
           error: err,
@@ -173,13 +179,6 @@ module.exports = {
           )
         }
 
-        if (User.confirmed === false) {
-          errors.confirmed = 'Confirm your email'
-          return (
-            res.status(400).json(errors)
-          )
-        }
-
         argon2.verify(User.password, password).then(match => {
           if (!match) {
             errors.password = 'wrong password'
@@ -191,7 +190,8 @@ module.exports = {
           const payload = {
             id: User.id,
             email: User.email,
-            username: User.username
+            username: User.username,
+            confirmed: User.confirmed
           }
 
           jwt.sign(

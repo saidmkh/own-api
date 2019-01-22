@@ -1,7 +1,7 @@
 const isEmpty = require('./empty_valid')
 
 const email_regex = /\S+@\S+/
-const username_regex = /^[a-zA-Z0-9.\-_$@*!]{3,30}$/
+const username_regex = /^[a-zA-Z0-9.-_$@*!]{3,30}$/
 let errors = {}
 
 module.exports = {

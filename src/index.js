@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const logger = require('morgan')
+const cors = require('cors')
 
 const mongoose = require('./config/config')
 const authRoute = require('./routes/auth')
@@ -8,6 +9,7 @@ const commentRoute = require('./routes/comment')
 const userRoute = require('./routes/user')
 
 const app = express()
+app.use(cors())
 
 mongoose.connection.on(
   'error',
